@@ -5,13 +5,17 @@ def get_files_info(working_directory, directory=None):
     if directory is None:
         return f"Error: You need to input a directory"
     
-    pwd = os.path.join(os.getcwd(), f"{working_directory}") 
+    pwd = os.path.abspath(working_directory)
     current_directory = os.path.abspath(os.path.join(working_directory, directory))
     
     if (not current_directory.startswith(f"{pwd}/")) and (pwd != current_directory):
+        print(pwd)
+        print(current_directory)
         return f'Error: Cannot list "{directory}" as it is outside the permitted working directory'
     
     if not os.path.isdir(current_directory):
+        print(pwd)
+        print(current_directory)
         return f'Error: "{directory}" is not a directory'
         
     try:
@@ -26,6 +30,4 @@ def get_files_info(working_directory, directory=None):
 
     except Exception as e:
         return f"Error: The error is {e}"
-        
 
-    
