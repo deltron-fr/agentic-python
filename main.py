@@ -32,27 +32,34 @@ def main():
     generate_content(client, messages, verbose)
 
 def generate_content(client, messages, verbose):
-    response = client.models.generate_content(
-            model='gemini-2.0-flash-001', contents=messages,
-            config=types.GenerateContentConfig(
-                tools=[available_functions], system_instruction=system_prompt)
-        )
-    
-    if verbose:
-        print(f"Prompt tokens: {response.usage_metadata.prompt_token_count}")
-        print(f"Response tokens: {response.usage_metadata.candidates_token_count}")
-    
+        
+    for i in range(20):
+        response = client.models.generate_content(
+                model='gemini-2.0-flash-001', contents=messages,
+                config=types.GenerateContentConfig(
+                    tools=[available_functions], system_instruction=system_prompt)
+            )
+        
+        if verbose:
+            print(f"Prompt tokens: {response.usage_metadata.prompt_token_count}")
+            print(f"Response tokens: {response.usage_metadata.candidates_token_count}")
 
-    if not response.function_calls:
-        return response.text
+        for candidate in response.candidates:
+            messages.append(candidate.content)
 
-    for function_call_part in response.function_calls:
-        function_call_result = call_function(function_call_part)
-        if function_call_result.parts[0].function_response.response:
-            if verbose:
-                print(f"-> {function_call_result.parts[0].function_response.response}")
+        if not response.function_calls:
+            print(response.text)
+            break
+        
         else:
-            raise ValueError(f"Function call failed.")
+            for function_call_part in response.function_calls:
+                function_call_result = call_function(function_call_part)
+                if function_call_result.parts[0].function_response.response:
+                    if verbose:
+                        print(f"-> {function_call_result.parts[0]}")
+                        messages.append(function_call_result)
+                else:
+                    raise ValueError(f"Function call failed.")
 
 if __name__ == "__main__":
     main()
