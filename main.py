@@ -4,7 +4,6 @@ from google import genai
 from google.genai import types
 from function_calls import available_functions
 from prompts import system_prompt
-import json
 
 def main():
     load_dotenv()
