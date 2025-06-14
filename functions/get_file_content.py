@@ -1,8 +1,8 @@
 import os
 from google.genai import types
+from config import MAX_CHARS
 
 def get_file_content(working_directory, file_path):
-
     pwd = os.path.abspath(working_directory)
     current_file = os.path.abspath(os.path.join(working_directory, file_path))
 
@@ -12,8 +12,6 @@ def get_file_content(working_directory, file_path):
     if not os.path.isfile(current_file):
         return f'Error: File not found or is not a regular file: "{file_path}"'
     
-    MAX_CHARS = 10000
-
     try:
         with open(current_file, "r") as f:
             content = f.read()
@@ -28,13 +26,13 @@ def get_file_content(working_directory, file_path):
 
 schema_get_file_content = types.FunctionDeclaration(
     name="get_file_content",
-    description="Return the content of the file specified, constrained to the working directory.",
+    description=f"Reads and returns the first {MAX_CHARS} characters of the content from a specified file within the working directory.",
     parameters=types.Schema(
         type=types.Type.OBJECT,
         properties={
             "file_path": types.Schema(
                 type=types.Type.STRING,
-                description="The file path to get the contents of the file from.",
+                description="The path to the file whose content should be read, relative to the working directory.",
             ),
         },
     ),

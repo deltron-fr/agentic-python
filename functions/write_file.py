@@ -8,12 +8,17 @@ def write_file(working_directory, file_path, content):
     if (not current_file.startswith(f"{pwd}")):
         return f'Error: Cannot write to "{file_path}" as it is outside the permitted working directory'
     
-    try:
-        if not os.path.exists(current_file):
-            with open(current_file, 'w') as f:
-                f.write(content)
-            return f'Successfully wrote to "{file_path}" ({len(content)} characters written)'
+    
+    if not os.path.exists(current_file):
+        try:
+            os.makedirs(os.path.dirname(current_file), exist_ok=True)
+        except Exception as e:
+            return f"Error: creating directory: {e}"
         
+    if os.path.exists(current_file) and os.path.isdir(current_file):
+        return f'Error: "{file_path}" is a directory, not a file'
+        
+    try:
         with open(current_file, 'w') as f:
             f.write(content)
         return f'Successfully wrote to "{file_path}" ({len(content)} characters written)'
@@ -25,13 +30,13 @@ def write_file(working_directory, file_path, content):
 
 schema_write_file = types.FunctionDeclaration(
     name="write_file",
-    description="Write or overwrite content to the file provided.",
+    description="Writes content to a file within the working directory. Creates the file if it doesn't exist.",
     parameters=types.Schema(
         type=types.Type.OBJECT,
         properties={
             "file_path": types.Schema(
                 type=types.Type.STRING,
-                description="The file path to get the contents of the file from.",
+                description="Path to the file to write, relative to the working directory.",
             ),
             "content": types.Schema(
                 type=types.Type.STRING,

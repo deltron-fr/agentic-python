@@ -1,5 +1,3 @@
-# calculator.py
-
 class Calculator:
     def __init__(self):
         self.operators = {
@@ -16,9 +14,19 @@ class Calculator:
         }
 
     def evaluate(self, expression):
+        print(f"Evaluating: {expression}")
         if not expression or expression.isspace():
             return None
-        tokens = expression.strip().split()
+
+        new_expression = ''
+        for char in expression:
+            if char in self.operators:
+                new_expression += ' ' + char + ' '
+            else:
+                new_expression += char
+
+        tokens = new_expression.strip().split()
+        print(f"Tokens: {tokens}")
         return self._evaluate_infix(tokens)
 
     def _evaluate_infix(self, tokens):
@@ -26,6 +34,7 @@ class Calculator:
         operators = []
 
         for token in tokens:
+            print(f"Token: {token}")
             if token in self.operators:
                 while (
                     operators

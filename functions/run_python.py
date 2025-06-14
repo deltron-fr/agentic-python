@@ -1,7 +1,7 @@
 import os, subprocess
 from google.genai import types
 
-def run_python_file(working_directory, file_path):
+def run_python_file(working_directory, file_path, args=None):
     pwd = os.path.abspath(working_directory)
     current_file = os.path.abspath(os.path.join(working_directory, file_path))
 
@@ -15,7 +15,11 @@ def run_python_file(working_directory, file_path):
         return f'Error: "{file_path}" is not a Python file.'
     
     try:
-        result = subprocess.run(["python3", f"{current_file}"], timeout=30, capture_output=True, cwd=pwd, text=True)
+        commands = ["python3", f"{current_file}"]
+        if args:
+            commands.extend(args)
+            
+        result = subprocess.run(commands, timeout=30, capture_output=True, cwd=pwd, text=True)
 
         output = []
 
@@ -38,14 +42,22 @@ def run_python_file(working_directory, file_path):
 
 schema_run_python = types.FunctionDeclaration(
     name="run_python_file",
-    description="Execute the python code.",
+    description="Executes a Python file within the working directory and returns the output from the interpreter.",
     parameters=types.Schema(
         type=types.Type.OBJECT,
         properties={
             "file_path": types.Schema(
                 type=types.Type.STRING,
-                description="The file path to the python code that is to be executed.",
+                description="Path to the Python file to execute, relative to the working directory.",
             ),
+            "args": types.Schema(
+                type=types.Type.ARRAY,
+                items=types.Schema(
+                    type=types.Type.STRING,
+                    description="Optional arguments to pass to the Python file.",
+                ),
+                description="Optional arguments to pass to the Python file.",
+            )
         },
     ),
 )

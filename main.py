@@ -32,7 +32,6 @@ def main():
     generate_content(client, messages, verbose)
 
 def generate_content(client, messages, verbose):
-        
     for i in range(20):
         response = client.models.generate_content(
                 model='gemini-2.0-flash-001', contents=messages,
@@ -52,14 +51,27 @@ def generate_content(client, messages, verbose):
             break
         
         else:
+            function_responses = []
+
             for function_call_part in response.function_calls:
-                function_call_result = call_function(function_call_part)
-                if function_call_result.parts[0].function_response.response:
-                    if verbose:
-                        print(f"-> {function_call_result.parts[0]}")
-                        messages.append(function_call_result)
-                else:
-                    raise ValueError(f"Function call failed.")
+                function_call_result = call_function(function_call_part, verbose)
+
+                if (
+                    not function_call_result.parts
+                    or not function_call_result.parts[0].function_response
+                ):
+                    raise Exception("empty function call result")
+                if verbose:
+                    print(f"-> {function_call_result.parts[0].function_response.response}")
+                function_responses.append(function_call_result.parts[0])
+                messages.append(function_call_result)
+            
+            if not function_responses:
+                raise Exception("no function responses generated, exiting.")
 
 if __name__ == "__main__":
     main()
+
+
+
+   

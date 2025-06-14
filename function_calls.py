@@ -3,6 +3,7 @@ from functions.get_files_info import schema_get_files_info, get_files_info
 from functions.get_file_content import schema_get_file_content, get_file_content
 from functions.write_file import schema_write_file, write_file
 from functions.run_python import schema_run_python, run_python_file
+from config import working_directory
 
 available_functions = types.Tool(
     function_declarations=[
@@ -22,13 +23,13 @@ def call_function(function_call_part, verbose=False):
     function_name = function_call_part.name
 
     if function_name == "get_files_info":
-        function_result = get_files_info("./calculator", **function_call_part.args)
+        function_result = get_files_info(working_directory, **function_call_part.args)
     elif function_name == "get_file_content":
-        function_result = get_file_content("./calculator", **function_call_part.args)
+        function_result = get_file_content(working_directory, **function_call_part.args)
     elif function_name == "write_file":
-        function_result = write_file("./calculator", **function_call_part.args)
+        function_result = write_file(working_directory, **function_call_part.args)
     elif function_name == "run_python_file":
-        function_result = run_python_file("./calculator", **function_call_part.args)
+        function_result = run_python_file(working_directory, **function_call_part.args)
     else:
         return types.Content(
             role="tool",
