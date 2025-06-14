@@ -14,7 +14,7 @@ def main():
     if not user_input:
         print("AI Code Assistant")
         print('\nUsage: python3 main.py "your prompt here"')
-        print('\nEg: python main.py "How do I build a trading bot"')
+        print('\nEg: python3 main.py "How do I build a calculator app in Python?"')
         sys.exit(1)
 
     user_prompt = " ".join(user_input)
