@@ -64,3 +64,7 @@ A command-line AI coding agent powered by Google Gemini, designed to interact wi
 ## ⚠️ Warning
 
 This agent can read, write, and execute code within its working directory. **Even with sandboxing, there are security risks.** Do not give the agent access to sensitive files or directories, and do not share this code with others for their use. Like commercial agentic tools, this project is not perfectly secure — use at your own risk.
+
+## About This Project
+
+💡 _This project was built as part of a challenge on [Boot.dev](https://boot.dev). While the project outline and goals were provided, all implementation, design decisions, and code were written independently._
